@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:torch/torch.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:async_loader/async_loader.dart';
 
 const int INTERVAL = 5000;
 Stopwatch stopwatch = new Stopwatch();
@@ -27,86 +28,101 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  @override
-  initState() {
-    super.initState();
-    () async {
-      modelList = await getModelList(userInfoLoginId);
-    }();
-    print(modelList);
-    if (modelItems.isEmpty) {
-      for (var listItem in modelList) {
-        print(listItem);
-        modelItems.add(Model(listItem['id'], listItem['model_name']));
-      }
-    }
-  }
+  final GlobalKey<AsyncLoaderState> _asyncLoaderState =
+      GlobalKey<AsyncLoaderState>();
 
   AsciiCodec ascii = AsciiCodec();
   var serverPath = '192.168.35.52';
   var port = '3000';
 
-  var modelList = [];
   var userInfoLoginId = 'sky7th';
-  List<Model> modelItems = [];
 
-  List<Card> _buildGridCards(BuildContext context) {
+  Future<List<Card>> _buildGridCards(BuildContext context) async {
+    var modelList = [];
+    List<Model> modelItems = [];
+
+    modelList = await getModelList(userInfoLoginId);
+    if (modelItems.isEmpty) {
+      for (var listItem in modelList) {
+        modelItems.add(Model(listItem['id'], listItem['model_name']));
+      }
+    }
+
     if (modelItems == null || modelItems.isEmpty) {
       return const <Card>[];
     }
     final ThemeData theme = Theme.of(context);
 
-    return modelItems.map((modelItem) {
-      return Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 1.3,
-              child: RaisedButton(
-                onPressed: () async {
-                  print('press before');
-                  var key = await getModelKey(modelItem.modelId);
-                  print(key);
-                  setState(() {
-                    flashOnByKey(key);
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 15.0),
-                child: Center(
-                  child: Text(
-                    modelItem.modelName,
-                    style: theme.textTheme.title,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                  ),
+    return new Future.delayed(
+        new Duration(milliseconds: 500),
+        () => modelItems.map((modelItem) {
+              return Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    AspectRatio(
+                      aspectRatio: 1.3,
+                      child: RaisedButton(
+                        onPressed: () async {
+                          print('press before');
+                          var key = await getModelKey(modelItem.modelId);
+                          print(key);
+                          setState(() {
+                            flashOnByKey(key);
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 15.0),
+                        child: Center(
+                          child: Text(
+                            modelItem.modelName,
+                            style: theme.textTheme.title,
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }).toList();
+              );
+            }).toList());
   }
 
   @override
   Widget build(BuildContext context) {
+    var _asyncCardsLoader = new AsyncLoader(
+      key: _asyncLoaderState,
+      initState: () async => await _buildGridCards(context),
+      renderLoad: () => new CircularProgressIndicator(),
+      renderError: ([error]) => new Text('로딩 중에 문제가 생겼습니다.'),
+      renderSuccess: ({data}) => GridView.count(
+        crossAxisCount: 2,
+        padding: EdgeInsets.all(16.0),
+        childAspectRatio: 8.0 / 9.0,
+        children: data,
+      ),
+    );
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
             'Light-Key',
           ),
         ),
-        body: GridView.count(
-          crossAxisCount: 2,
-          padding: EdgeInsets.all(16.0),
-          childAspectRatio: 8.0 / 9.0,
-          children: _buildGridCards(context),
+        body: Center(
+          child: _asyncCardsLoader,
+        ),
+        floatingActionButton: new FloatingActionButton(
+          onPressed: () => _asyncLoaderState.currentState
+              .reloadState()
+              .whenComplete(() => print('finished reload')),
+          tooltip: 'Reload',
+          child: new Icon(Icons.refresh),
         ),
         resizeToAvoidBottomInset: false);
   }
