@@ -1,41 +1,19 @@
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:torch/torch.dart';
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:async_loader/async_loader.dart';
+import 'package:light_key/tools/build_grid_card.dart';
+import 'package:light_key/tools/encode_to_flash.dart';
 
-const int INTERVAL = 5000;
-Stopwatch stopwatch = new Stopwatch();
+class HomePage extends StatefulWidget {
+  HomePage();
 
-class Model {
-  int modelId;
-  String modelName;
-
-  Model(int modelId, String modelName) {
-    this.modelId = modelId;
-    this.modelName = modelName;
-  }
-
-  Model.origin() {
-    modelId = null;
-    modelName = '';
-  }
-}
-
-class MainPage extends StatefulWidget {
   @override
-  _MainPageState createState() => _MainPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<AsyncLoaderState> _asyncLoaderState =
       GlobalKey<AsyncLoaderState>();
-
-  AsciiCodec ascii = AsciiCodec();
-  var serverPath = '192.168.35.52';
-  var port = '3000';
-
-  var userInfoLoginId = 'sky7th';
 
   Future<List<Card>> _buildGridCards(BuildContext context) async {
     var modelList = [];
@@ -67,9 +45,8 @@ class _MainPageState extends State<MainPage> {
                         onPressed: () async {
                           print('press before');
                           var key = await getModelKey(modelItem.modelId);
-                          print(key);
                           setState(() {
-                            flashOnByKey(key);
+                            flashOnByKey('+${key}-');
                           });
                         },
                       ),
@@ -125,86 +102,5 @@ class _MainPageState extends State<MainPage> {
           child: new Icon(Icons.refresh),
         ),
         resizeToAvoidBottomInset: false);
-  }
-
-  flashLightOn() {
-    Torch.turnOn();
-  }
-
-  flashLightOff() {
-    Torch.turnOff();
-  }
-
-  List binaryEncode(decimal) {
-    var binaryReverse = [0, 0, 0, 0, 0, 0, 0, 0];
-
-    for (int i = 0; i < 8; i++) {
-      binaryReverse[i] = decimal % 2; // 2로 나누었을 때 나머지를 배열에 저장
-      decimal = decimal ~/ 2; // 2로 나눈 몫을 저장
-
-      if (decimal == 0) // 몫이 0이 되면 반복을 끝냄
-        break;
-    }
-    print(binaryReverse);
-
-    return binaryReverse;
-  }
-
-  void flashOnByKey(key) async {
-    if (key != null) {
-      var byteKey = ascii.encode(key);
-      for (int i = 0; i < key.length; i++) {
-        sendValue(binaryEncode(byteKey[i]));
-      }
-    }
-  }
-
-  void sendValue(List binaryList) {
-    // start bit 보내기
-    flashLightOn();
-    stopwatch..reset();
-    stopwatch..start();
-    // 실제 값 보내기
-    for (int i = 0; i < 8; i++) {
-      int b = binaryList[i];
-      // 비트 사이 시간 간격
-      while (stopwatch.elapsedMicroseconds < INTERVAL) {}
-      if (b == 1) {
-        flashLightOn();
-      } else {
-        flashLightOff();
-      }
-      stopwatch..reset();
-    }
-    while (stopwatch.elapsedMicroseconds < INTERVAL) {} //Busy wait on last bit
-    // end bit 보내기
-    flashLightOff();
-    stopwatch..reset();
-    while (stopwatch.elapsedMicroseconds < INTERVAL) {} //Delay on stop bit
-  }
-
-  Future getModelList(userInfoLoginId) async {
-    try {
-      String urlPath =
-          'http://${serverPath}:${port}/getModelList/${userInfoLoginId}';
-
-      print(urlPath);
-      Response response = await Dio().get(urlPath);
-      return response.data['data'];
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future getModelKey(modelId) async {
-    try {
-      String urlPath = 'http://${serverPath}:${port}/getModelKey/${modelId}';
-
-      print(urlPath);
-      Response response = await Dio().get(urlPath);
-      return response.data['data']['key_value'];
-    } catch (e) {
-      print(e);
-    }
   }
 }
