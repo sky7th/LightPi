@@ -3,6 +3,9 @@ import 'package:light_key/tools/build_grid_card.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+var selectedModelId;
+var selectedModelName;
+
 class AdminPage extends StatefulWidget {
   @override
   _AdminPageState createState() => _AdminPageState();
@@ -11,18 +14,32 @@ class AdminPage extends StatefulWidget {
 class _AdminPageState extends State<AdminPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  List<MyConnect> items = [];
+  var items = [];
+  var searchState = '';
+  var titleName = '관리';
+  var centerText = '오른쪽 하단에 메뉴를 눌러주세요.';
 
-  _getConnectList() async {
+  _getConnectList(searchState) async {
     items = [];
-    var myConnectList = await getConnectApplyList(userInfoLoginId);
+    var myConnectList;
+    if (searchState == 'apply') {
+      myConnectList = await getConnectApplyList(userInfoId);
+    } else {
+      // 'master'
+      myConnectList = await getModelByMasterUser(userInfoId);
+    }
 
     if (myConnectList == null) {
     } else {
       for (var listItem in myConnectList) {
-        items.add(
-            MyConnect(listItem['connect_info_id'], listItem['model_name']));
-        print(listItem);
+        if (searchState == 'apply') {
+          items.add(
+              MyConnect(listItem['connect_info_id'], listItem['model_name']));
+        } else {
+          // 'master'
+          items.add(Model(listItem['model_info_id'], listItem['model_name'],
+              listItem['model_code']));
+        }
       }
     }
     setState(() {});
@@ -72,26 +89,27 @@ class _AdminPageState extends State<AdminPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Light-Key'),
+          title: Text(titleName),
+          backgroundColor: Colors.grey[850],
         ),
-        body: Container(
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  '${items[index].modelName}',
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.cancel),
-                  onPressed: () {
-                    _onDeleteItem(index);
+        body: items.length > 0
+            ? Container(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                        title: Text(
+                          '${items[index].modelName}',
+                        ),
+                        trailing: searchState == 'apply'
+                            ? _applyListIcons(index)
+                            : _masterListIcons(index));
                   },
                 ),
-              );
-            },
-          ),
-        ),
+              )
+            : Center(
+                child: Text(centerText),
+              ),
         floatingActionButton: _getFAB());
   }
 
@@ -108,8 +126,15 @@ class _AdminPageState extends State<AdminPage> {
         SpeedDialChild(
           child: Icon(Icons.people_outline),
           backgroundColor: Colors.white,
-          onTap: () {},
-          label: '나의 모델 관리',
+          onTap: () {
+            setState(() {
+              searchState = 'master';
+              titleName = '모델 관리';
+              centerText = '등록한 모델이 없습니다.';
+            });
+            _getConnectList(searchState);
+          },
+          label: '모델 관리',
           labelStyle: TextStyle(
               fontWeight: FontWeight.w500, color: Colors.black, fontSize: 16.0),
           labelBackgroundColor: Colors.white,
@@ -118,14 +143,61 @@ class _AdminPageState extends State<AdminPage> {
             child: Icon(Icons.people),
             backgroundColor: Colors.white,
             onTap: () {
-              _getConnectList();
+              setState(() {
+                searchState = 'apply';
+                titleName = '연결 신청 상태';
+                centerText = "연결 신청한 모델이 없습니다.";
+              });
+              _getConnectList(searchState);
             },
-            label: '나의 연결 신청 상태',
+            label: '연결 신청 상태',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
                 fontSize: 16.0),
             labelBackgroundColor: Colors.white),
+      ],
+    );
+  }
+
+  Widget _masterListIcons(index) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.library_add),
+          onPressed: () {
+            setState(() {
+              if (searchState == 'master') {
+                selectedModelId = items[index].modelId;
+                selectedModelName = items[index].modelName;
+              }
+            });
+            Navigator.pushNamed(context, '/applyListPage');
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: Icon(Icons.cancel),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  Widget _applyListIcons(index) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.cancel),
+          onPressed: () {
+            _onDeleteItem(index);
+          },
+        ),
       ],
     );
   }

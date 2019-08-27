@@ -19,11 +19,11 @@ class _HomePageState extends State<HomePage> {
     var modelList = [];
     List<Model> modelItems = [];
 
-    modelList = await getModelList(userInfoLoginId);
+    modelList = await getModelList(userInfoId);
     if (modelItems.isEmpty) {
       for (var listItem in modelList) {
         modelItems
-            .add(Model(listItem['model_info_id'], listItem['model_name']));
+            .add(Model(listItem['model_info_id'], listItem['model_name'], ''));
       }
     }
 
@@ -90,8 +90,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Light-Key',
+            '키 목록',
           ),
+          backgroundColor: Colors.grey[850],
         ),
         body: Center(
           child: _asyncCardsLoader,

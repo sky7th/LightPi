@@ -16,6 +16,8 @@ class _SearchPageState extends State<SearchPage> {
 
   List<Model> items = [];
   var searchState = '';
+  var titleName = '모델 검색';
+  var centerText = '오른쪽 하단에 메뉴를 눌러주세요.';
 
   _onAddItemPressed() {
     _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
@@ -41,22 +43,27 @@ class _SearchPageState extends State<SearchPage> {
       items = [];
       var modelList;
       if (searchState == '이름') {
-        modelList = await getModelByModelName(modelName, userInfoLoginId);
+        modelList = await getModelByModelName(modelName, userInfoId);
       } else {
-        modelList = await getModelByModelCode(modelName, userInfoLoginId);
+        modelList = await getModelByModelCode(modelName, userInfoId);
       }
       print(modelList);
       if (modelList == null) {
       } else if (modelList.runtimeType != List) {
-        items.add(Model(modelList['model_info_id'], modelList['model_name']));
+        items.add(
+            Model(modelList['model_info_id'], modelList['model_name'], ''));
       } else {
         for (var listItem in modelList) {
-          items.add(Model(listItem['model_info_id'], listItem['model_name']));
+          items.add(
+              Model(listItem['model_info_id'], listItem['model_name'], ''));
         }
       }
       print(items);
       _textEditingController.clear();
-      setState(() {});
+      setState(() {
+        titleName = "${searchState} 검색 결과";
+        centerText = "일치하는 결과가 없습니다.";
+      });
     }
   }
 
@@ -104,26 +111,31 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Light-Key'),
+          title: Text(titleName),
+          backgroundColor: Colors.grey[850],
         ),
-        body: Container(
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  '${items[index].modelName}',
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    _onAddItem(index);
+        body: items.length > 0
+            ? Container(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                        '${items[index].modelName}',
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          _onAddItem(index);
+                        },
+                      ),
+                    );
                   },
                 ),
-              );
-            },
-          ),
-        ),
+              )
+            : Center(
+                child: Text(centerText),
+              ),
         floatingActionButton: _getFAB());
   }
 
@@ -143,6 +155,8 @@ class _SearchPageState extends State<SearchPage> {
           onTap: () {
             setState(() {
               searchState = '코드';
+              titleName = '코드로 검색';
+              centerText = '';
             });
             _onAddItemPressed();
           },
@@ -157,6 +171,8 @@ class _SearchPageState extends State<SearchPage> {
             onTap: () {
               setState(() {
                 searchState = '이름';
+                titleName = '이름으로 검색';
+                centerText = '';
               });
               _onAddItemPressed();
             },

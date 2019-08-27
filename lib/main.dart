@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:light_key/screens/tab_page.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:light_key/screens/master_list_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,6 +17,18 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color(0xFF0A0E21),
           buttonColor: Colors.white),
       home: TabPage(),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/applyListPage':
+            return PageTransition(
+              child: ApplyListPage(),
+              type: PageTransitionType.leftToRight,
+            );
+            break;
+          default:
+            return null;
+        }
+      },
     );
   }
 }
