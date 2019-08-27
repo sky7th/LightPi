@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
           primaryColor: Color(0xFF0A0E21),
-          accentColor: Colors.black,
+          accentColor: Colors.white,
           scaffoldBackgroundColor: Color(0xFF0A0E21),
           buttonColor: Colors.white),
       home: TabPage(),

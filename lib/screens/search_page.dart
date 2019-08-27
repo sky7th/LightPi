@@ -15,7 +15,7 @@ class _SearchPageState extends State<SearchPage> {
       new TextEditingController();
 
   List<Model> items = [];
-  int _floatBtnCounter;
+  var searchState = '';
 
   _onAddItemPressed() {
     _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
@@ -26,7 +26,8 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             controller: _textEditingController,
             decoration: InputDecoration(
-              hintText: '찾으실 모델 이름을 입력해주세요.',
+              hintText:
+                  '찾으실 모델 ${searchState}${searchState == '이름' ? '을' : '를'} 입력해주세요.',
             ),
             onSubmitted: _onSubmit,
           ),
@@ -39,14 +40,18 @@ class _SearchPageState extends State<SearchPage> {
     if (modelName.isNotEmpty) {
       items = [];
       var modelList;
-      modelList = await getModelByModelName(modelName, userInfoLoginId);
+      if (searchState == '이름') {
+        modelList = await getModelByModelName(modelName, userInfoLoginId);
+      } else {
+        modelList = await getModelByModelCode(modelName, userInfoLoginId);
+      }
       print(modelList);
       if (modelList == null) {
       } else if (modelList.runtimeType != List) {
-        items.add(Model(modelList['id'], modelList['model_name']));
+        items.add(Model(modelList['model_info_id'], modelList['model_name']));
       } else {
         for (var listItem in modelList) {
-          items.add(Model(listItem['id'], listItem['model_name']));
+          items.add(Model(listItem['model_info_id'], listItem['model_name']));
         }
       }
       print(items);
@@ -58,22 +63,29 @@ class _SearchPageState extends State<SearchPage> {
   _onAddItem(index) async {
     Alert(
       context: context,
-      type: AlertType.warning,
+      type: AlertType.info,
       title: "키 추가 신청",
       desc: "해당 모델에 키 값을 신청하시겠습니까?",
+      style: AlertStyle(
+        backgroundColor: Colors.blueGrey,
+        titleStyle: TextStyle(color: Colors.white, fontSize: 20),
+        descStyle: TextStyle(color: Colors.white, fontSize: 15),
+        animationType: AnimationType.grow,
+        animationDuration: Duration(milliseconds: 250),
+      ),
       buttons: [
         DialogButton(
           child: Text(
             "아니요",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 17),
           ),
           onPressed: () => Navigator.pop(context),
-          color: Color.fromRGBO(0, 179, 134, 1.0),
+          color: Color.fromRGBO(200, 90, 100, 1.0),
         ),
         DialogButton(
           child: Text(
             "네",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 17),
           ),
           onPressed: () async {
             await insertConnect(userInfoId, items[index].modelId);
@@ -81,10 +93,7 @@ class _SearchPageState extends State<SearchPage> {
             setState(() {});
             Navigator.pop(context);
           },
-          gradient: LinearGradient(colors: [
-            Color.fromRGBO(116, 116, 191, 1.0),
-            Color.fromRGBO(52, 138, 199, 1.0)
-          ]),
+          color: Color.fromRGBO(0, 179, 134, 1.0),
         )
       ],
     ).show();
@@ -92,21 +101,21 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(
-          title: new Text('Light-Key'),
+        appBar: AppBar(
+          title: Text('Light-Key'),
         ),
-        body: new Container(
-          child: new ListView.builder(
+        body: Container(
+          child: ListView.builder(
             itemCount: items.length,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(
                   '${items[index].modelName}',
                 ),
-                trailing: new IconButton(
-                  icon: new Icon(Icons.add),
+                trailing: IconButton(
+                  icon: Icon(Icons.add),
                   onPressed: () {
                     _onAddItem(index);
                   },
@@ -124,6 +133,7 @@ class _SearchPageState extends State<SearchPage> {
       animatedIconTheme: IconThemeData(size: 22),
       overlayColor: Colors.grey[850],
       backgroundColor: Colors.white,
+      marginBottom: 50,
       visible: true,
       curve: Curves.bounceIn,
       children: [
@@ -132,8 +142,9 @@ class _SearchPageState extends State<SearchPage> {
           backgroundColor: Colors.white,
           onTap: () {
             setState(() {
-              _floatBtnCounter = 0;
+              searchState = '코드';
             });
+            _onAddItemPressed();
           },
           label: '코드로 검색',
           labelStyle: TextStyle(
@@ -144,6 +155,9 @@ class _SearchPageState extends State<SearchPage> {
             child: Icon(Icons.people),
             backgroundColor: Colors.white,
             onTap: () {
+              setState(() {
+                searchState = '이름';
+              });
               _onAddItemPressed();
             },
             label: '이름으로 검색',

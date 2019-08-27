@@ -16,6 +16,21 @@ class Model {
   }
 }
 
+class MyConnect {
+  int connectId;
+  String modelName;
+
+  MyConnect(int connectId, String modelName) {
+    this.connectId = connectId;
+    this.modelName = modelName;
+  }
+
+  MyConnect.origin() {
+    connectId = null;
+    modelName = '';
+  }
+}
+
 var serverPath = '192.168.35.9';
 var port = '3001';
 
@@ -26,6 +41,18 @@ Future getModelList(userInfoLoginId) async {
   try {
     String urlPath =
         'http://${serverPath}:${port}/model/modelList/${userInfoLoginId}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getConnectApplyList(userInfoLoginId) async {
+  try {
+    String urlPath = 'http://${serverPath}:${port}/connect/${userInfoLoginId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -81,7 +108,24 @@ Future insertConnect(userInfoId, modelInfoId) async {
     print(postData);
     Response response = await Dio().post(urlPath,
         data: postData,
-        options: new Options(
+        options: Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future deleteConnect(int connectInfoId) async {
+  try {
+    String urlPath = 'http://${serverPath}:${port}/connect/delete';
+    var postData = {"connectInfoId": connectInfoId};
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: Options(
             contentType:
                 ContentType.parse("application/x-www-form-urlencoded")));
     return response.data['data'];

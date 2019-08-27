@@ -22,7 +22,8 @@ class _HomePageState extends State<HomePage> {
     modelList = await getModelList(userInfoLoginId);
     if (modelItems.isEmpty) {
       for (var listItem in modelList) {
-        modelItems.add(Model(listItem['id'], listItem['model_name']));
+        modelItems
+            .add(Model(listItem['model_info_id'], listItem['model_name']));
       }
     }
 
@@ -73,11 +74,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var _asyncCardsLoader = new AsyncLoader(
+    var _asyncCardsLoader = AsyncLoader(
       key: _asyncLoaderState,
       initState: () async => await _buildGridCards(context),
-      renderLoad: () => new CircularProgressIndicator(),
-      renderError: ([error]) => new Text('로딩 중에 문제가 생겼습니다.'),
+      renderLoad: () => CircularProgressIndicator(),
+      renderError: ([error]) => Text('로딩 중에 문제가 생겼습니다.'),
       renderSuccess: ({data}) => GridView.count(
         crossAxisCount: 2,
         padding: EdgeInsets.all(16.0),
@@ -100,7 +101,7 @@ class _HomePageState extends State<HomePage> {
               .reloadState()
               .whenComplete(() => print('finished reload')),
           tooltip: 'Reload',
-          child: new Icon(Icons.refresh, color: Colors.black),
+          child: Icon(Icons.refresh, color: Colors.black),
           backgroundColor: Colors.white,
         ),
         resizeToAvoidBottomInset: false);
