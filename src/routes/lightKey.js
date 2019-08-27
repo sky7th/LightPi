@@ -13,10 +13,11 @@ router.post('/model/edit', lightKeyController.updateModelMasterUserInfoId);
 router.get('/model/:masterUserInfoId', lightKeyController.getModelByMasterUserInfoId);
 router.post('/model/modelName/edit/:modelInfoId', lightKeyController.updateModelName);
 
-// 연결 요청, 수락, 거절
+// 내 신청 목록 가져오기, 연결 요청, 수락, 거절
+router.get('/connect/:userInfoLoginId', lightKeyController.getConnectApplyListByUserId);
 router.post('/connect/add', lightKeyController.insertConnect);
 router.post('/connect/edit/:connectInfoId', lightKeyController.updateConnectSetConnectFlag);
-router.post('/connect/delete/:connectInfoId', lightKeyController.deleteConnectByConnectId);
+router.post('/connect/delete', lightKeyController.deleteConnectByConnectId);
 
 
 

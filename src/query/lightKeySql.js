@@ -2,7 +2,7 @@ const lightKeySql = {};
 
 lightKeySql.SELECT_MODEL_LIST_BY_USER_ID = 
     '   SELECT ' +
-    '       m.id' +
+    '       m.id AS model_info_id' +
     '       ,m.model_name' +
     '   FROM ' +
     '       user_info AS u' +
@@ -14,6 +14,20 @@ lightKeySql.SELECT_MODEL_LIST_BY_USER_ID =
     '       u.user_login_id = ?' +
     '   AND c.connect_flag = 1'
 
+lightKeySql.SELECT_CONNECT_APPLY_LIST_BY_USER_ID = 
+    '   SELECT ' +
+    '       c.id AS connect_info_id' +
+    '       ,m.model_name' +
+    '   FROM ' +
+    '       user_info AS u' +
+    '   INNER JOIN' +
+    '       connect_info AS c ON (u.id = c.user_info_id)' +
+    '   INNER JOIN' +
+    '       model_info AS m ON (c.model_info_id = m.id)' +
+    '   WHERE' +
+    '       u.user_login_id = ?' +
+    '   AND c.connect_flag = 0'
+
 lightKeySql.SELECT_MODEL_KEY_VALUE_BY_MODEL_ID = 
     '   SELECT' +
     '       model_key_value' +
@@ -24,7 +38,7 @@ lightKeySql.SELECT_MODEL_KEY_VALUE_BY_MODEL_ID =
 
 lightKeySql.SELECT_MODEL_BY_MODEL_NAME = 
     '   SELECT ' +
-    '       m.id' +
+    '       m.id AS model_info_id' +
     '       ,m.model_name' +
     '   FROM ' +
     '       model_info AS m' +
@@ -39,7 +53,7 @@ lightKeySql.SELECT_MODEL_BY_MODEL_NAME =
 
 lightKeySql.SELECT_MODEL_BY_MODEL_CODE = 
     '   SELECT ' +
-    '       m.id' +
+    '       m.id AS model_info_id' +
     '       ,m.model_name' +
     '   FROM ' +
     '       model_info AS m' +
@@ -67,7 +81,7 @@ lightKeySql.UPDATE_MODEL_SET_MASTER_USER_INFO_ID =
 
 // 사용자가 마스터인 제품 가져오기
 lightKeySql.SELECT_MODEL_BY_MASTER_USER_INFO_ID = 
-    '   SELECT id' +
+    '   SELECT id AS model_info_id' +
     '         ,model_name' +
     '         ,model_code' +
     '   FROM model_info' +
@@ -87,7 +101,7 @@ lightKeySql.UPDATE_CONNECT_SET_CONNECT_FLAG =
 
 // 요청 거절 버튼
 lightKeySql.DELETE_CONNECT_BY_CONNECT_ID = 
-    '   DELETE connect_info ' +
+    '   DELETE FROM connect_info ' +
     '   WHERE id = ?'
 
 

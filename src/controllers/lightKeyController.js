@@ -14,6 +14,18 @@ controller.getModelListByUserId = (req, res) => {
     });
 };
 
+controller.getConnectApplyListByUserId = (req, res) => {
+    let { userInfoLoginId } = req.params;
+    console.log(req.params);
+    req.getConnection((err, conn) => {
+        conn.query(lightKeySql.SELECT_CONNECT_APPLY_LIST_BY_USER_ID, [userInfoLoginId], (err, rows) => {
+            res.send({
+                data: rows
+            })
+        });
+    });
+};
+
 controller.getModelKeyByModelId = (req, res) => {
     let { modelId } = req.params;
     console.log(req.params);
@@ -131,8 +143,8 @@ controller.updateConnectSetConnectFlag = (req, res) => {
 };
 
 controller.deleteConnectByConnectId = (req, res) => {
-    let { connectInfoId = '' } = req.params;
-    console.log(req.params);
+    let { connectInfoId = '' } = req.body;
+    console.log(req.body);
     req.getConnection((err, conn) => {
         conn.query(lightKeySql.DELETE_CONNECT_BY_CONNECT_ID, [connectInfoId], (err, rows) => {
             console.log(connectInfoId);
