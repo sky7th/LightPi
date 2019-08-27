@@ -35,9 +35,9 @@ class _TabPageState extends State<TabPage> {
         body: Center(child: _pages[_selectedIndex]),
         bottomNavigationBar: FancyBottomNavigation(
           tabs: [
-            TabData(iconData: Icons.home, title: "Home"),
+            TabData(iconData: Icons.home, title: "Key"),
             TabData(iconData: Icons.search, title: "Search"),
-            TabData(iconData: Icons.shopping_cart, title: "Basket")
+            TabData(iconData: Icons.add_to_queue, title: "Admin")
           ],
           onTabChangedListener: (position) {
             setState(() {

@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () async {
                           print('press before');
                           var key = await getModelKey(modelItem.modelId);
+                          print(key);
                           setState(() {
                             flashOnByKey('+${key}-');
                           });
@@ -99,7 +100,8 @@ class _HomePageState extends State<HomePage> {
               .reloadState()
               .whenComplete(() => print('finished reload')),
           tooltip: 'Reload',
-          child: new Icon(Icons.refresh),
+          child: new Icon(Icons.refresh, color: Colors.black),
+          backgroundColor: Colors.white,
         ),
         resizeToAvoidBottomInset: false);
   }

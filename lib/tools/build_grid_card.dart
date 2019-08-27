@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'dart:io';
 
 class Model {
   int modelId;
@@ -15,15 +16,16 @@ class Model {
   }
 }
 
-var serverPath = '192.168.1.46';
+var serverPath = '192.168.35.9';
 var port = '3001';
 
+int userInfoId = 1;
 var userInfoLoginId = 'sky7th';
 
 Future getModelList(userInfoLoginId) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/getModelList/${userInfoLoginId}';
+        'http://${serverPath}:${port}/model/modelList/${userInfoLoginId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -35,11 +37,54 @@ Future getModelList(userInfoLoginId) async {
 
 Future getModelKey(modelId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/getModelKey/${modelId}';
+    String urlPath = 'http://${serverPath}:${port}/model/modelKey/${modelId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
-    return response.data['data']['key_value'];
+    return response.data['data']['model_key_value'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getModelByModelName(modelName, userLoginId) async {
+  try {
+    String urlPath =
+        'http://${serverPath}:${port}/model/modelName/${modelName}/${userLoginId}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getModelByModelCode(modelCode, userLoginId) async {
+  try {
+    String urlPath =
+        'http://${serverPath}:${port}/model/modelCode/${modelCode}/${userLoginId}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future insertConnect(userInfoId, modelInfoId) async {
+  try {
+    String urlPath = 'http://${serverPath}:${port}/connect/add';
+    var postData = {"userInfoId": userInfoId, "modelInfoId": modelInfoId};
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: new Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
   } catch (e) {
     print(e);
   }
