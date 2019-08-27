@@ -7,8 +7,8 @@ drop table if exists user_info;
 -- -----------------------------------------------------
 CREATE TABLE `user_info` (
     `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '유저 id',
-    `login_id` VARCHAR(100) NULL DEFAULT NULL COMMENT '로그인 id',
-    `login_pw` VARCHAR(100) NULL DEFAULT NULL COMMENT '로그인 password',
+    `user_login_id` VARCHAR(100) NULL DEFAULT NULL COMMENT '로그인 id',
+    `user_login_pw` VARCHAR(100) NULL DEFAULT NULL COMMENT '로그인 password',
     PRIMARY KEY (`id`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -20,7 +20,7 @@ CREATE TABLE `model_info` (
     `master_user_info_id` INT(11) NULL DEFAULT NULL COMMENT '마스터 유저 id',
     `model_code` VARCHAR(100) NULL DEFAULT NULL COMMENT '모델 고유 코드',
     `model_name` VARCHAR(100) NULL DEFAULT NULL COMMENT '설정된 모델 이름',
-    `key_value` VARCHAR(100) NULL DEFAULT NULL COMMENT '모델 키 값',
+    `model_key_value` VARCHAR(100) NULL DEFAULT NULL COMMENT '모델 키 값',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`master_user_info_id`) REFERENCES `user_info` (`id`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
