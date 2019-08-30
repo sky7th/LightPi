@@ -9,6 +9,7 @@ CREATE TABLE `user_info` (
     `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '유저 id',
     `user_login_id` VARCHAR(100) NULL DEFAULT NULL COMMENT '로그인 id',
     `user_login_pw` VARCHAR(100) NULL DEFAULT NULL COMMENT '로그인 password',
+    `user_name` VARCHAR(100) NULL DEFAULT NULL COMMENT '유저 이름',
     PRIMARY KEY (`id`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
