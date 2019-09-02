@@ -52,7 +52,7 @@ class User {
   }
 }
 
-var serverPath = '192.168.35.9';
+var serverPath = '192.168.1.46';
 var port = '3001';
 
 int userInfoId = 1;
@@ -181,6 +181,32 @@ Future getApplyModelListByModelId(modelId) async {
   }
 }
 
+Future getApplyModelListByUserName(modelId, userName) async {
+  try {
+    String urlPath =
+        'http://${serverPath}:${port}/model/applyModelList/userName/${modelId}/${userName}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getApplyModelListByUserLoginId(modelId, userLoginId) async {
+  try {
+    String urlPath =
+        'http://${serverPath}:${port}/model/applyModelList/userLoginId/${modelId}/${userLoginId}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
 Future getConnectModelListByModelId(modelId) async {
   try {
     String urlPath =
@@ -194,10 +220,75 @@ Future getConnectModelListByModelId(modelId) async {
   }
 }
 
+Future getConnectModelListByUserName(modelId, userName) async {
+  try {
+    String urlPath =
+        'http://${serverPath}:${port}/model/connectModelList/userName/${modelId}/${userName}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getConnectModelListByUserLoginId(modelId, userLoginId) async {
+  try {
+    String urlPath =
+        'http://${serverPath}:${port}/model/connectModelList/userLoginId/${modelId}/${userLoginId}';
+
+    print(urlPath);
+    Response response = await Dio().get(urlPath);
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
 Future updateConnect(connectInfoId) async {
   try {
     String urlPath = 'http://${serverPath}:${port}/connect/edit';
     var postData = {"connectInfoId": connectInfoId};
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future editModelName(String modelName, int modelInfoId) async {
+  try {
+    String urlPath = 'http://${serverPath}:${port}/model/modelName/edit';
+    var postData = {"modelName": modelName, "modelInfoId": modelInfoId};
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future addModel(
+    int masterUserInfoId, String modelCode, String modelName) async {
+  try {
+    String urlPath = 'http://${serverPath}:${port}/model/edit';
+    var postData = {
+      "masterUserInfoId": masterUserInfoId,
+      "modelCode": modelCode,
+      "modelName": modelName
+    };
     print(urlPath);
     print(postData);
     Response response = await Dio().post(urlPath,

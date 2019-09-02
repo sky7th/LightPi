@@ -48,19 +48,27 @@ class _ApplyListPageState extends State<ApplyListPage> {
       var modelList;
       if (searchState == false) {
         if (selectValue == 'apply') {
-          modelList =
-              await getApplyModelListByModelId(selectedModelId); // 전체 신청자들
+          modelList = await getApplyModelListByModelId(selectedModelId);
         } else if (selectValue == 'connect') {
-          modelList =
-              await getConnectModelListByModelId(selectedModelId); // 전체 연결자들
+          modelList = await getConnectModelListByModelId(selectedModelId);
         }
       } else {
         if (selectValue == 'apply') {
-          modelList =
-              await getModelByModelName(modelName, userInfoId); // 검색 신청자들
+          if (searchValue == '이름') {
+            modelList =
+                await getApplyModelListByUserName(selectedModelId, modelName);
+          } else if (searchValue == '아이디') {
+            modelList = await getApplyModelListByUserLoginId(
+                selectedModelId, modelName);
+          }
         } else if (selectValue == 'connect') {
-          modelList =
-              await getModelByModelCode(modelName, userInfoId); // 검색 연결자들
+          if (searchValue == '이름') {
+            modelList =
+                await getConnectModelListByUserName(selectedModelId, modelName);
+          } else if (searchValue == '아이디') {
+            modelList = await getConnectModelListByUserLoginId(
+                selectedModelId, modelName);
+          }
         }
       }
       print(modelList);
@@ -174,12 +182,31 @@ class _ApplyListPageState extends State<ApplyListPage> {
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                        title: Text(
-                          '${items[index].userName}',
-                        ),
-                        trailing: selectValue == 'apply'
-                            ? _applyListIcons(index)
-                            : _connectListIcons(index));
+                      title: Row(
+                        children: <Widget>[
+                          Icon(Icons.person_outline),
+                          Padding(padding: EdgeInsets.fromLTRB(0, 0, 22, 0)),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                '${items[index].userName}',
+                              ),
+                              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 6)),
+                              Text(
+                                '${items[index].userLoginId}',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey[500]),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      trailing: selectValue == 'apply'
+                          ? _applyListIcons(index)
+                          : _connectListIcons(index),
+                      contentPadding: EdgeInsets.fromLTRB(25, 5, 15, 5),
+                    );
                   },
                 ),
               )
@@ -194,7 +221,7 @@ class _ApplyListPageState extends State<ApplyListPage> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         IconButton(
-          icon: Icon(Icons.add),
+          icon: Icon(Icons.add_circle),
           onPressed: () {
             _onApplyItem(index);
           },
@@ -235,7 +262,7 @@ class _ApplyListPageState extends State<ApplyListPage> {
               selectValue = 'apply';
               searchState = false;
               searchInit = false;
-              titleName = '키 사용을 요청한 유저';
+              titleName = '키 사용 요청 유저';
               centerText = '키 사용을 요청한 유저가 없습니다.';
             });
             if (searchState == false) {
@@ -244,7 +271,7 @@ class _ApplyListPageState extends State<ApplyListPage> {
               _onAddItemPressed();
             }
           },
-          label: '키 사용을 요청한 유저',
+          label: '키 사용 요청 유저',
           labelStyle: TextStyle(
               fontWeight: FontWeight.w500, color: Colors.black, fontSize: 16.0),
           labelBackgroundColor: Colors.white,
@@ -278,7 +305,8 @@ class _ApplyListPageState extends State<ApplyListPage> {
                 backgroundColor: Colors.white,
                 onTap: () {
                   setState(() {
-                    titleName = '아이디로 검색';
+                    titleName =
+                        '${selectValue == 'apply' ? '키 사용 요청 유저' : '키 사용 유저'} 검색 (아이디)';
                     searchValue = '아이디';
                     searchState = true;
                     centerText = '';
@@ -301,7 +329,8 @@ class _ApplyListPageState extends State<ApplyListPage> {
                 backgroundColor: Colors.white,
                 onTap: () {
                   setState(() {
-                    titleName = '이름으로 검색';
+                    titleName =
+                        '${selectValue == 'apply' ? '키 사용 요청 유저' : '키 사용 유저'} 검색 (이름)';
                     searchValue = '이름';
                     searchState = true;
                     centerText = '';

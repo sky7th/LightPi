@@ -62,7 +62,7 @@ class _SearchPageState extends State<SearchPage> {
       _textEditingController.clear();
       setState(() {
         titleName = "${searchState} 검색 결과";
-        centerText = "일치하는 결과가 없습니다.";
+        centerText = "이미 신청을 했거나, 일치하는 결과가 없습니다.";
       });
     }
   }
