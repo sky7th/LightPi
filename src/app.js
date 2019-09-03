@@ -3,7 +3,7 @@ const express = require('express'),
     morgan = require('morgan'),
     mysql = require('mysql'),
     myConnection = require('express-myconnection');
-cron = require('node-cron');
+    cron = require('node-cron');
 
 const lightKeySql = require('./query/lightKeySql');
 

@@ -30,15 +30,26 @@ router.post('/connect/edit', lightKeyController.updateConnectSetConnectFlag);
 router.post('/connect/delete', lightKeyController.deleteConnectByConnectId);
 
 
-// 선택한 모델에 신청한 유저들 가져오기
+// 선택한 모델에 신청한 유저들 모두 가져오기
 router.get('/model/applyModelList/:modelInfoId', lightKeyController.getMasterApplyListByModelInfoId);
+// 선택한 모델에 신청한 유저들 이름으로 검색
 router.get('/model/applyModelList/userName/:modelInfoId/:userName', lightKeyController.getMasterApplyListByUserName);
+// 선택한 모델에 신청한 유저들 아이디로 검색
 router.get('/model/applyModelList/userLoginId/:modelInfoId/:userLoginId', lightKeyController.getMasterApplyListByUserLoginId);
-// 선택한 모델에 연결된 유저들 가져오기
+
+// 선택한 모델에 연결된 유저들 모두 가져오기
 router.get('/model/connectModelList/:modelInfoId', lightKeyController.getMasterConnectListByModelInfoId);
+// 선택한 모델에 연결된 유저들 이름으로 검색
 router.get('/model/connectModelList/userName/:modelInfoId/:userName', lightKeyController.getMasterConnectListByUserName);
+// 선택한 모델에 연결된 유저들 아이디로 검색
 router.get('/model/connectModelList/userLoginId/:modelInfoId/:userLoginId', lightKeyController.getMasterConnectListByUserLoginId);
 
+
+
+router.post('/user/join', lightKeyController.insertUserInfo);
+router.post('/user/login', lightKeyController.getUserLogin);
+
+router.post('/user/id', lightKeyController.getUserIdByUserLoginId);
 
 
 
