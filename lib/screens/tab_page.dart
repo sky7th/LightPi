@@ -3,7 +3,8 @@ import 'package:light_key/screens/admin_page.dart';
 import 'package:light_key/screens/home_page.dart';
 import 'package:light_key/screens/search_page.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:light_key/tools/constants.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 
 class TabPage extends StatefulWidget {
 //  final FirebaseUser user;
@@ -36,6 +37,9 @@ class _TabPageState extends State<TabPage> {
     return Scaffold(
         body: Center(child: _pages[_selectedIndex]),
         bottomNavigationBar: FancyBottomNavigation(
+          activeIconColor: kTopBottomColor,
+          barBackgroundColor: kTopBottomColor,
+
           tabs: [
             TabData(iconData: Icons.home, title: "키"),
             TabData(iconData: Icons.search, title: "찾기"),

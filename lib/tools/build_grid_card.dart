@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'dart:io';
 
@@ -52,16 +54,21 @@ class User {
   }
 }
 
-var serverPath = '192.168.1.46';
-var port = '3001';
+var serverPath = 'http://106.10.50.11';
+var port = ':3000';
 
-int userInfoId = 1;
-var userInfoLoginId = 'sky7th';
+int userInfoId = -1;
+var userInfoLoginId = 'none';
+
+final StreamController<String> isloginStreamController = StreamController<String>();
+var isLogin;
+
+var isTextFocus = true;
 
 Future getModelList(userInfoId) async {
   try {
-    String urlPath =
-        'http://${serverPath}:${port}/model/modelList/${userInfoId}';
+    String urlPath = '${serverPath}${port}/model/modelList/${userInfoId}';
+//        'http://${serverPath}:${port}/model/modelList/${userInfoId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -73,7 +80,7 @@ Future getModelList(userInfoId) async {
 
 Future getConnectApplyList(userInfoId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/connect/${userInfoId}';
+    String urlPath = '${serverPath}${port}/connect/${userInfoId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -85,7 +92,7 @@ Future getConnectApplyList(userInfoId) async {
 
 Future getModelKey(modelId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/model/modelKey/${modelId}';
+    String urlPath = '${serverPath}${port}/model/modelKey/${modelId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -98,7 +105,7 @@ Future getModelKey(modelId) async {
 Future getModelByModelName(modelName, userInfoId) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/modelName/${modelName}/${userInfoId}';
+        '${serverPath}${port}/model/modelName/${modelName}/${userInfoId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -111,7 +118,7 @@ Future getModelByModelName(modelName, userInfoId) async {
 Future getModelByModelCode(modelCode, userInfoId) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/modelCode/${modelCode}/${userInfoId}';
+        '${serverPath}${port}/model/modelCode/${modelCode}/${userInfoId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -123,7 +130,7 @@ Future getModelByModelCode(modelCode, userInfoId) async {
 
 Future insertConnect(userInfoId, modelInfoId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/connect/add';
+    String urlPath = '${serverPath}${port}/connect/add';
     var postData = {"userInfoId": userInfoId, "modelInfoId": modelInfoId};
     print(urlPath);
     print(postData);
@@ -140,7 +147,7 @@ Future insertConnect(userInfoId, modelInfoId) async {
 
 Future deleteConnect(int connectInfoId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/connect/delete';
+    String urlPath = '${serverPath}${port}/connect/delete';
     var postData = {"connectInfoId": connectInfoId};
     print(urlPath);
     print(postData);
@@ -158,7 +165,7 @@ Future deleteConnect(int connectInfoId) async {
 Future getModelByMasterUser(masterUserInfoId) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/masterModelList/${masterUserInfoId}';
+        '${serverPath}${port}/model/masterModelList/${masterUserInfoId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -170,8 +177,7 @@ Future getModelByMasterUser(masterUserInfoId) async {
 
 Future getApplyModelListByModelId(modelId) async {
   try {
-    String urlPath =
-        'http://${serverPath}:${port}/model/applyModelList/${modelId}';
+    String urlPath = '${serverPath}${port}/model/applyModelList/${modelId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -184,7 +190,7 @@ Future getApplyModelListByModelId(modelId) async {
 Future getApplyModelListByUserName(modelId, userName) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/applyModelList/userName/${modelId}/${userName}';
+        '${serverPath}${port}/model/applyModelList/userName/${modelId}/${userName}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -197,7 +203,7 @@ Future getApplyModelListByUserName(modelId, userName) async {
 Future getApplyModelListByUserLoginId(modelId, userLoginId) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/applyModelList/userLoginId/${modelId}/${userLoginId}';
+        '${serverPath}${port}/model/applyModelList/userLoginId/${modelId}/${userLoginId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -209,8 +215,7 @@ Future getApplyModelListByUserLoginId(modelId, userLoginId) async {
 
 Future getConnectModelListByModelId(modelId) async {
   try {
-    String urlPath =
-        'http://${serverPath}:${port}/model/connectModelList/${modelId}';
+    String urlPath = '${serverPath}${port}/model/connectModelList/${modelId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -223,7 +228,7 @@ Future getConnectModelListByModelId(modelId) async {
 Future getConnectModelListByUserName(modelId, userName) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/connectModelList/userName/${modelId}/${userName}';
+        '${serverPath}${port}/model/connectModelList/userName/${modelId}/${userName}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -236,7 +241,7 @@ Future getConnectModelListByUserName(modelId, userName) async {
 Future getConnectModelListByUserLoginId(modelId, userLoginId) async {
   try {
     String urlPath =
-        'http://${serverPath}:${port}/model/connectModelList/userLoginId/${modelId}/${userLoginId}';
+        '${serverPath}${port}/model/connectModelList/userLoginId/${modelId}/${userLoginId}';
 
     print(urlPath);
     Response response = await Dio().get(urlPath);
@@ -248,7 +253,7 @@ Future getConnectModelListByUserLoginId(modelId, userLoginId) async {
 
 Future updateConnect(connectInfoId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/connect/edit';
+    String urlPath = '${serverPath}${port}/connect/edit';
     var postData = {"connectInfoId": connectInfoId};
     print(urlPath);
     print(postData);
@@ -265,7 +270,7 @@ Future updateConnect(connectInfoId) async {
 
 Future editModelName(String modelName, int modelInfoId) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/model/modelName/edit';
+    String urlPath = '${serverPath}${port}/model/modelName/edit';
     var postData = {"modelName": modelName, "modelInfoId": modelInfoId};
     print(urlPath);
     print(postData);
@@ -283,12 +288,67 @@ Future editModelName(String modelName, int modelInfoId) async {
 Future addModel(
     int masterUserInfoId, String modelCode, String modelName) async {
   try {
-    String urlPath = 'http://${serverPath}:${port}/model/edit';
+    String urlPath = '${serverPath}${port}/model/edit';
     var postData = {
       "masterUserInfoId": masterUserInfoId,
       "modelCode": modelCode,
       "modelName": modelName
     };
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future joinUser(String userLoginId, String userLoginPw, String userName) async {
+  try {
+    String urlPath = '${serverPath}${port}/user/join';
+    var postData = {
+      "userLoginId": userLoginId,
+      "userLoginPw": userLoginPw,
+      "userName": userName
+    };
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future loginUser(String userLoginId, String userLoginPw) async {
+  try {
+    String urlPath = '${serverPath}${port}/user/login';
+    var postData = {"userLoginId": userLoginId, "userLoginPw": userLoginPw};
+    print(urlPath);
+    print(postData);
+    Response response = await Dio().post(urlPath,
+        data: postData,
+        options: Options(
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.data['data'];
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getUserId(String userLoginId) async {
+  try {
+    String urlPath = '${serverPath}${port}/user/id';
+    var postData = {"userLoginId": userLoginId};
     print(urlPath);
     print(postData);
     Response response = await Dio().post(urlPath,

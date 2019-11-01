@@ -15,16 +15,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
-          primaryColor: Color(0xFF0A0E21),
+          primaryColor: Color(0xFF34699a),
           accentColor: Colors.white,
           scaffoldBackgroundColor: Color(0xFF0A0E21),
           buttonColor: Colors.white),
+//      theme: ThemeData(
+//          primaryColor: Color(0xFF70a1d7),
+//          accentColor: Colors.white,
+//          scaffoldBackgroundColor: Color(0xFFa1de93),
+//          buttonColor: Colors.white),
       home: RootPage(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/applyListPage':
             return PageTransition(
               child: ApplyListPage(),
+              type: PageTransitionType.leftToRight,
+            );
+            break;
+          case '/tabPage':
+            return PageTransition(
+              child: TabPage(),
               type: PageTransitionType.leftToRight,
             );
             break;

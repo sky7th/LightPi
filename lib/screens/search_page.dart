@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:light_key/tools/build_grid_card.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:light_key/tools/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SearchPage extends StatefulWidget {
@@ -112,7 +113,7 @@ class _SearchPageState extends State<SearchPage> {
         key: _scaffoldKey,
         appBar: AppBar(
           title: Text(titleName),
-          backgroundColor: Colors.grey[850],
+          backgroundColor: kTopBottomColor,
         ),
         body: items.length > 0
             ? Container(
@@ -134,7 +135,10 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               )
             : Center(
-                child: Text(centerText),
+                child: Text(
+                  centerText,
+                  style: kNoItemTextStyle,
+                ),
               ),
         floatingActionButton: _getFAB());
   }
@@ -145,12 +149,16 @@ class _SearchPageState extends State<SearchPage> {
       animatedIconTheme: IconThemeData(size: 22),
       overlayColor: Colors.grey[850],
       backgroundColor: Colors.white,
+      foregroundColor: kTopBottomColor,
       marginBottom: 50,
       visible: true,
       curve: Curves.bounceIn,
       children: [
         SpeedDialChild(
-          child: Icon(Icons.people_outline),
+          child: Icon(
+            Icons.people_outline,
+            color: kTopBottomColor,
+          ),
           backgroundColor: Colors.white,
           onTap: () {
             setState(() {
@@ -162,11 +170,16 @@ class _SearchPageState extends State<SearchPage> {
           },
           label: '코드로 검색',
           labelStyle: TextStyle(
-              fontWeight: FontWeight.w500, color: Colors.black, fontSize: 16.0),
+              fontWeight: FontWeight.w500,
+              color: kTopBottomColor,
+              fontSize: 16.0),
           labelBackgroundColor: Colors.white,
         ),
         SpeedDialChild(
-            child: Icon(Icons.people),
+            child: Icon(
+              Icons.people,
+              color: kTopBottomColor,
+            ),
             backgroundColor: Colors.white,
             onTap: () {
               setState(() {
@@ -179,7 +192,7 @@ class _SearchPageState extends State<SearchPage> {
             label: '이름으로 검색',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.black,
+                color: kTopBottomColor,
                 fontSize: 16.0),
             labelBackgroundColor: Colors.white),
       ],

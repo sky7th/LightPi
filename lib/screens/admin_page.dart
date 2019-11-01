@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:light_key/tools/build_grid_card.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:light_key/tools/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 var selectedModelId;
 var selectedModelName;
@@ -208,13 +212,54 @@ class _AdminPageState extends State<AdminPage> {
     ).show();
   }
 
+  _onLogoutItem() async {
+    Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "로그아웃",
+      desc: "로그아웃 하시겠습니까?",
+      style: AlertStyle(
+        backgroundColor: Colors.blueGrey,
+        titleStyle: TextStyle(color: Colors.white, fontSize: 20),
+        descStyle: TextStyle(color: Colors.white, fontSize: 15),
+        animationType: AnimationType.grow,
+        animationDuration: Duration(milliseconds: 250),
+      ),
+      buttons: [
+        DialogButton(
+          child: Text(
+            "아니요",
+            style: TextStyle(color: Colors.white, fontSize: 17),
+          ),
+          onPressed: () => Navigator.pop(context),
+          color: Color.fromRGBO(200, 90, 100, 1.0),
+        ),
+        DialogButton(
+          child: Text(
+            "네",
+            style: TextStyle(color: Colors.white, fontSize: 17),
+          ),
+          onPressed: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('userLoginId', 'none');
+            prefs.setInt('userId', -1);
+            setState(() {});
+            Navigator.pop(context);
+            exit(0);
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        )
+      ],
+    ).show();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: Text(titleName),
-          backgroundColor: Colors.grey[850],
+          backgroundColor: kTopBottomColor,
         ),
         body: items.length > 0
             ? Container(
@@ -256,7 +301,13 @@ class _AdminPageState extends State<AdminPage> {
                 ),
               )
             : Center(
-                child: Text(centerText),
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Text(
+                    centerText,
+                    style: kNoItemTextStyle,
+                  ),
+                ),
               ),
         floatingActionButton: _getFAB());
   }
@@ -267,12 +318,16 @@ class _AdminPageState extends State<AdminPage> {
       animatedIconTheme: IconThemeData(size: 22),
       overlayColor: Colors.grey[850],
       backgroundColor: Colors.white,
+      foregroundColor: kTopBottomColor,
       marginBottom: 50,
       visible: true,
       curve: Curves.bounceIn,
       children: [
         SpeedDialChild(
-          child: Icon(Icons.people_outline),
+          child: Icon(
+            Icons.people_outline,
+            color: kTopBottomColor,
+          ),
           backgroundColor: Colors.white,
           onTap: () {
             setState(() {
@@ -284,11 +339,16 @@ class _AdminPageState extends State<AdminPage> {
           },
           label: '모델 관리',
           labelStyle: TextStyle(
-              fontWeight: FontWeight.w500, color: Colors.black, fontSize: 16.0),
+              fontWeight: FontWeight.w500,
+              color: kTopBottomColor,
+              fontSize: 16.0),
           labelBackgroundColor: Colors.white,
         ),
         SpeedDialChild(
-            child: Icon(Icons.people),
+            child: Icon(
+              Icons.people,
+              color: kTopBottomColor,
+            ),
             backgroundColor: Colors.white,
             onTap: () {
               setState(() {
@@ -301,7 +361,7 @@ class _AdminPageState extends State<AdminPage> {
             label: '연결 신청 상태',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.black,
+                color: kTopBottomColor,
                 fontSize: 16.0),
             labelBackgroundColor: Colors.white),
         searchState == 'master'
@@ -319,13 +379,29 @@ class _AdminPageState extends State<AdminPage> {
                 label: '새 모델 추가',
                 labelStyle: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                    color: kTopBottomColor,
                     fontSize: 16.0),
                 labelBackgroundColor: Colors.white)
             : SpeedDialChild(
                 backgroundColor: Colors.white,
                 onTap: () {},
               ),
+        SpeedDialChild(
+            child: Icon(
+              Icons.people,
+              color: kTopBottomColor,
+            ),
+            backgroundColor: Colors.white,
+            onTap: () {
+              setState(() {});
+              _onLogoutItem();
+            },
+            label: '로그아웃',
+            labelStyle: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: kTopBottomColor,
+                fontSize: 16.0),
+            labelBackgroundColor: Colors.white),
       ],
     );
   }

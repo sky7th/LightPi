@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:light_key/tools/build_grid_card.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:light_key/tools/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:light_key/screens/admin_page.dart';
 
@@ -211,7 +212,10 @@ class _ApplyListPageState extends State<ApplyListPage> {
                 ),
               )
             : Center(
-                child: Text(centerText),
+                child: Text(
+                  centerText,
+                  style: kNoItemTextStyle,
+                ),
               ),
         floatingActionButton: _getFAB());
   }
@@ -273,11 +277,16 @@ class _ApplyListPageState extends State<ApplyListPage> {
           },
           label: '키 사용 요청 유저',
           labelStyle: TextStyle(
-              fontWeight: FontWeight.w500, color: Colors.black, fontSize: 16.0),
+              fontWeight: FontWeight.w500,
+              color: kTopBottomColor,
+              fontSize: 16.0),
           labelBackgroundColor: Colors.white,
         ),
         SpeedDialChild(
-            child: Icon(Icons.people),
+            child: Icon(
+              Icons.people,
+              color: kTopBottomColor,
+            ),
             backgroundColor: Colors.white,
             onTap: () {
               setState(() {
@@ -296,12 +305,15 @@ class _ApplyListPageState extends State<ApplyListPage> {
             label: '키 사용 유저',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.black,
+                color: kTopBottomColor,
                 fontSize: 16.0),
             labelBackgroundColor: Colors.white),
         searchInit == false
             ? SpeedDialChild(
-                child: Icon(Icons.search),
+                child: Icon(
+                  Icons.search,
+                  color: kTopBottomColor,
+                ),
                 backgroundColor: Colors.white,
                 onTap: () {
                   setState(() {
@@ -316,7 +328,7 @@ class _ApplyListPageState extends State<ApplyListPage> {
                 label: '아이디로 검색',
                 labelStyle: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                    color: kTopBottomColor,
                     fontSize: 16.0),
                 labelBackgroundColor: Colors.white)
             : SpeedDialChild(
@@ -325,7 +337,10 @@ class _ApplyListPageState extends State<ApplyListPage> {
               ),
         searchInit == false
             ? SpeedDialChild(
-                child: Icon(Icons.search),
+                child: Icon(
+                  Icons.search,
+                  color: kTopBottomColor,
+                ),
                 backgroundColor: Colors.white,
                 onTap: () {
                   setState(() {
@@ -340,7 +355,7 @@ class _ApplyListPageState extends State<ApplyListPage> {
                 label: '이름으로 검색',
                 labelStyle: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                    color: kTopBottomColor,
                     fontSize: 16.0),
                 labelBackgroundColor: Colors.white)
             : SpeedDialChild(

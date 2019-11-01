@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:async_loader/async_loader.dart';
 import 'package:light_key/tools/build_grid_card.dart';
 import 'package:light_key/tools/encode_to_flash.dart';
+import 'package:light_key/tools/constants.dart';
 
 class HomePage extends StatefulWidget {
   HomePage();
@@ -43,6 +44,11 @@ class _HomePageState extends State<HomePage> {
                     AspectRatio(
                       aspectRatio: 1.3,
                       child: RaisedButton(
+                        child: Icon(
+                          Icons.vpn_key,
+                          size: 40,
+                        ),
+                        color: kHomePageCardColor,
                         onPressed: () async {
                           print('press before');
                           var key = await getModelKey(modelItem.modelId);
@@ -92,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           title: Text(
             '키 목록',
           ),
-          backgroundColor: Colors.grey[850],
+          backgroundColor: kTopBottomColor,
         ),
         body: Center(
           child: _asyncCardsLoader,
@@ -102,8 +108,8 @@ class _HomePageState extends State<HomePage> {
               .reloadState()
               .whenComplete(() => print('finished reload')),
           tooltip: 'Reload',
-          child: Icon(Icons.refresh, color: Colors.black),
-          backgroundColor: Colors.white,
+          child: Icon(Icons.refresh, color: Colors.white),
+          backgroundColor: kHomePageCardColor,
         ),
         resizeToAvoidBottomInset: false);
   }
